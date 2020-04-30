@@ -1,0 +1,30 @@
+const redis = require('redis');
+
+class PubSub {
+	constructor() {
+		this.publisher = redis.createClient();
+		this.subscriber = redis.createClient();
+
+		this.subscriber.on('message', (channel, message) => this.handleMessage(channel, message));
+	}
+
+	handleMessage(channel, message) {
+		console.log(`Message received: ${channel} ${message}`);
+	}
+
+	subscribeToChannels(channels) {
+		Object.values(channels).forEach((channel) => {
+			this.subscriber.subscribe(channel);
+		});
+	}
+
+	publish({ channel, message }) {
+		this.publisher.publish(channel, message);
+    }
+    
+	subscribe(channel) {
+		this.subscriber.subscribe(channel);
+	}
+}
+
+module.exports = PubSub;
