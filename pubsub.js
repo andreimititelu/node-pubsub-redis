@@ -5,11 +5,18 @@ class PubSub {
 		this.publisher = redis.createClient();
 		this.subscriber = redis.createClient();
 
+		this.publisher.on('error', (error) => this.handleError(error));
 		this.subscriber.on('message', (channel, message) => this.handleMessage(channel, message));
+		this.subscriber.on('error', (error) => this.handleError(error));
+
 	}
 
 	handleMessage(channel, message) {
 		console.log(`Message received: ${channel} ${message}`);
+	}
+
+	handleError(error) {
+		console.log(`Error ${error}`);
 	}
 
 	subscribeToChannels(channels) {
